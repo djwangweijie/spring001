@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/beans"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		                    http://www.springframework.org/schema/beans/spring-beans-4.2.xsd">
+
+	<!-- 将该技术交给springbean容器进行管理 
+	<bean name="t1" class="com.wwj.model.User" init-method="init"
+		destroy-method="destory"></bean>
+		-->
+
+	<!-- 属性注入 -->
+	<bean name="p1" class="com.wwj.diimpl.Vperson">
+		<property name="vpname" value="djwangweijie"></property>
+	</bean>
+	<bean name="v1" class="com.wwj.diimpl.Vmodel">
+		<property name="vp" ref="p1"></property>
+	</bean>
+
+	<!-- 构造方法注入 -->
+	<bean name="v2" class="com.wwj.diimpl.Vmodel">
+		<constructor-arg name="vname" value="michael"></constructor-arg>
+	</bean>
+
+	<!-- 复杂类型的支持 -->
+	<bean name="v3" class="com.wwj.diimpl.Vmodel">
+		<property name="arr">
+			<array>
+				<value>tom</value>
+				<value>jerry</value>
+			</array>
+		</property>
+		<property name="list">
+			<list>
+				<value>tom1</value>
+				<value>jerry1</value>
+			</list>
+		</property>
+		<property name="map">
+				<map>
+					<entry key="A" value="abc"></entry>
+					<entry key="B" value="bcd"></entry>
+				</map>
+		</property>
+	</bean>
+	
+	<!-- 分隔线spring以XML的方式整合JDBCTemplate-->
+	
+
+</beans>
+ 
