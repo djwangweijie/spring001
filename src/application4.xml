@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		                    http://www.springframework.org/schema/beans/spring-beans-4.2.xsd 
+							http://www.springframework.org/schema/context 
+							http://www.springframework.org/schema/context/spring-context-4.2.xsd 
+							http://www.springframework.org/schema/aop 
+							http://www.springframework.org/schema/aop/spring-aop-4.2.xsd 
+							http://www.springframework.org/schema/tx 
+							http://www.springframework.org/schema/tx/spring-tx-4.2.xsd ">
+	<!-- 自动根据扫描对应包下面的注解,并实例化对应的对象 -->
+	<context:component-scan base-package="com.wwj.springtx"></context:component-scan>
+
+	<!-- 连接管理交给C3P0 -->
+	<bean name="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="jdbcUrl" value="jdbc:mysql://localhost:3306/spring"></property>
+		<property name="driverClass" value="com.mysql.jdbc.Driver"></property>
+		<property name="user" value="root"></property>
+		<property name="password" value="root"></property>
+	</bean>
+
+	<!--JDBCTemplate 需要 datasource 连接池 -->
+	<bean name="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	
+
+
+	<!-- 1使用spring事务管理管理数据源操作 -->
+	<bean name="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	
+	  <!-- 支持事务注解 -->
+   <tx:annotation-driven transaction-manager="transactionManager"/>
+
+	<!-- 2.定义需要被增强的方法，也就是那些需要介入事务的管理 -->
+	<!-- 
+propagation:REQUIRED(依赖) 如果当前没有事务，就新建一个事务，如果已经存在一个事务中，加入到这个事务中。这是最常见的选择。
+isolation: 隔离级别  
+read-only: 是否只读
+
+	<tx:advice id="advice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="pay*" propagation="REQUIRED" />
+		</tx:attributes>
+	</tx:advice>
+		 -->
+	<!-- 3.配置切入点，切哪 也就是 织入的过程 -->
+	<!-- 配置织入 
+<aop:config  >-->
+    <!-- 配置切点表达式
+    <aop:pointcut expression="execution(* com.wwj.springtx..*.*(..))" id="txPc"/> -->
+    <!-- 配置切面 : 通知+切点
+             advice-ref:通知的名称
+             pointcut-ref:切点的名称
+
+    <aop:advisor advice-ref="txAdvice" pointcut-ref="txPc" />
+</aop:config>     -->
+
+
+
+</beans>

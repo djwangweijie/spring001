@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+ http://www.springframework.org/schema/beans/spring-beans-4.2.xsd 
+ http://www.springframework.org/schema/context 
+ http://www.springframework.org/schema/context/spring-context-4.2.xsd 
+ http://www.springframework.org/schema/aop 
+ http://www.springframework.org/schema/aop/spring-aop-4.2.xsd ">
+
+<!-- 1.构建需要被代理的对象 -->
+<bean name="userService" class="com.wwj.springaop.UserServiceImpl"></bean>
+<!-- 2. 构建需要增强的方法 -->
+<bean name="myAdvice" class="com.wwj.springaop.Myadvice"></bean>
+<!-- 3. 定义aop -->
+	<!-- aop 配置 -->
+	<aop:config>
+		<!-- 自定义切入点 -->
+		<!-- 
+ 1、execution(): 表达式主体。
+
+ 2、第一个*号：表示返回类型，*号表示所有的类型。
+
+ 3、包名：表示需要拦截的包名，后面的两个句点表示当前包和当前包的所有子包。
+
+ 4、第二个*号：表示类名，*号表示所有的类。
+
+ 5、*(..):最后这个星号表示方法名，*号表示所有的方法，后面括弧里面表示方法的参数，两个句点表示任何参数。
+ -->
+		<aop:pointcut expression="execution(* com.wwj.springaop..*.*(..))" id="anyMethod"/>
+		
+		<aop:aspect ref="myAdvice">
+			<!-- 前置通知 -->
+			<!-- 测试自定义切入点 -->
+			<aop:before method="before" pointcut-ref="anyMethod"/>
+			<!-- 最终通知 -->
+			<aop:after method="after" pointcut-ref="anyMethod"/>
+			<!-- 后置通知 -->
+			<aop:after-returning method="afterReturning" pointcut-ref="anyMethod"/>
+			<!-- 环绕通知 -->
+			<aop:around method="around" pointcut-ref="anyMethod"/>
+			<!-- 异常抛出通知 -->
+			<aop:after-throwing method="afterException" pointcut-ref="anyMethod"/>
+		</aop:aspect>
+	</aop:config>
+</beans>
